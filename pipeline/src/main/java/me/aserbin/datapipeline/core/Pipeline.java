@@ -49,7 +49,7 @@ public class Pipeline<I, O> {
             System.out.println("Running job: " + job.getClass().getName());
             try {
                 result = job.run(result);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 switch (jobConfig.getOnFail()) {
                     case IGNORE:
                         if ( job instanceof Producer) {
@@ -64,6 +64,5 @@ public class Pipeline<I, O> {
         }
         return (O) result.getData();
     }
-
 
 }

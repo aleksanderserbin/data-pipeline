@@ -61,7 +61,7 @@ public class PipelineTest {
                 .build();
 
         Pipeline parent = PipelineBuilder.startFrom(String.class)
-                .map(s -> Integer.getInteger(s))
+                .map(Integer::getInteger)
                 .fork(child)
                 .build();
 

@@ -7,7 +7,7 @@ package me.aserbin.datapipeline.exception;
  * @see me.aserbin.datapipeline.core.Pipeline
  */
 public class PipelineInvocationException extends RuntimeException {
-    public PipelineInvocationException(Exception e) {
+    public PipelineInvocationException(Throwable e) {
         super(e);
     }
     public PipelineInvocationException(String message) {

@@ -17,7 +17,7 @@ import java.util.function.Function;
  *
  *  @see Pipeline
  */
-public class PipelineBuilder<T> {
+public class PipelineBuilder<F, T> {
 
     private List<PipelineJobConfig> jobs;
 
@@ -25,7 +25,7 @@ public class PipelineBuilder<T> {
         this.jobs = jobs;
     }
 
-    private PipelineBuilder() {
+    public PipelineBuilder() {
         this.jobs = new ArrayList<>();
     }
 
@@ -36,8 +36,8 @@ public class PipelineBuilder<T> {
      * @param data Class type of wanted data
      * @return {@link PipelineBuilder} typed to data param
      */
-    public static <T> PipelineBuilder<T> startFrom(Class<T> data) {
-        return new PipelineBuilder<T>();
+    public static <T> PipelineBuilder<T, T> startFrom(Class<T> data) {
+        return new PipelineBuilder<T, T>();
     }
 
     /**
@@ -47,7 +47,7 @@ public class PipelineBuilder<T> {
      * @param <O> Output type of the job
      * @return {@link PipelineBuilder} typed to O
      */
-    public <O> PipelineBuilder<O> then(PipelineJob<T, O> job) {
+    public <O> PipelineBuilder<F, O> then(PipelineJob<T, O> job) {
         return then(job, JobFailActions.STOP);
     }
 
@@ -58,7 +58,7 @@ public class PipelineBuilder<T> {
      * @param <O> Output type of the job
      * @return {@link PipelineBuilder} typed to O
      */
-    public <O> PipelineBuilder<O> then(PipelineJob<T, O> job, JobFailActions onFail) {
+    public <O> PipelineBuilder<F, O> then(PipelineJob<T, O> job, JobFailActions onFail) {
         this.jobs.add(new PipelineJobConfig(job, onFail));
         return new PipelineBuilder<>(this.jobs);
     }
@@ -74,7 +74,7 @@ public class PipelineBuilder<T> {
      * @param pipeline {@link Pipeline} to fork
      * @return the same {@link PipelineBuilder}
      */
-    public PipelineBuilder<T> fork(Pipeline<T, ?> pipeline) {
+    public PipelineBuilder<F, T> fork(Pipeline<T, ?> pipeline) {
         this.then(new FunctionalProducer<T>(data -> {
             new Thread(() -> pipeline.run(data)).start();
         }));
@@ -87,7 +87,7 @@ public class PipelineBuilder<T> {
      * @param mapFunction function to apply
      * @return {@link PipelineBuilder} typed to O
      */
-    public <O> PipelineBuilder<O> map(Function<T, O> mapFunction) {
+    public <O> PipelineBuilder<F, O> map(Function<T, O> mapFunction) {
         return this.then(new Mapper<>(mapFunction));
     }
 
@@ -95,7 +95,7 @@ public class PipelineBuilder<T> {
      * Creates the {@link Pipeline} instance with all the jobs  to be run.
      * @return {@link Pipeline}
      */
-    public Pipeline<? super Object, T> build() {
+    public Pipeline<F, T> build() {
         return new Pipeline<>(this.jobs);
     }
 
