@@ -82,6 +82,21 @@ public class PipelineBuilder<F, T> {
     }
 
     /**
+     * Provides shortcut for mutation actions e.g. changing the object, not mapping.
+     * Adds new Mapper job to the pipeline.
+     * @param mutator Function to mutate the given object
+     * @param onFail Behavioral strategy on fail
+     * @return the same instance of PipelineBuilder
+     */
+    public PipelineBuilder<F, T> mutate(Consumer<T> mutator, JobFailActions onFail) {
+        this.then(new Mapper<>(d -> {
+            mutator.accept(d);
+            return d;
+        }), onFail);
+        return this;
+    }
+
+    /**
      * Adds map job to the current pipeline. Actually is a shortcut to
      * adding {@link Mapper} processor manually.
      * @param mapFunction function to apply
