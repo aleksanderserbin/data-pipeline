@@ -8,3 +8,4 @@ script:
     mvn clean install -Pdocker
   else
     mvn clean test
+  fi
