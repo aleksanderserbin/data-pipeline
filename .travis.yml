@@ -5,7 +5,8 @@ sudo: false
 script:
 - |
   if [ "${TRAVIS_PULL_REQUEST// }" == "false" ]; then
-    mvn clean install -Pdocker
+    #mvn clean install -Pdocker
+    mvn clean test
   else
     mvn clean test
   fi
