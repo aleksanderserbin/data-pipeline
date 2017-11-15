@@ -1,3 +1,10 @@
 language: java
+services:
+  - docker
 sudo: false
-script: mvn clean test
+script:
+  - |
+    if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+      mvn clean install -Pdocker
+    else
+      mvn clean test
