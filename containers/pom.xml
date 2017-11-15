@@ -46,19 +46,25 @@
                                     <skip>false</skip>
                                 </configuration>
                             </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
                             <execution>
-                                <id>docker-compose-deploy</id>
-                                <phase>install</phase>
+                                <id>docker-dependencies</id>
+                                <phase>process-sources</phase>
                                 <goals>
-                                    <goal>exec</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>docker-compose</executable>
-                                    <arguments>
-                                        <argument>up</argument>
-                                        <argument>-d</argument>
-                                    </arguments>
-                                    <skip>false</skip>
+                                    <includeGroupIds>me.aserbin</includeGroupIds>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <stripVersion>true</stripVersion>
+                                    <outputDirectory>${project.build.directory}/docker-build-context/deps</outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>
@@ -83,26 +89,6 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/docker-build-context</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
-                <executions>
-                    <execution>
-                        <id>docker-dependencies</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>me.aserbin</includeGroupIds>
-                            <excludeTransitive>true</excludeTransitive>
-                            <stripVersion>true</stripVersion>
-                            <outputDirectory>${project.build.directory}/docker-build-context/deps</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
